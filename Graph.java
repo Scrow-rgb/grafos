@@ -102,36 +102,72 @@ class Grafo {
     }
 
     public boolean verificarConexo() {
-        // Implemente a verificação de conexidade aqui
-        return false;
+        boolean[] visitado = new boolean[numVertices];
+        buscaEmProfundidade(0, visitado);
+
+        for (boolean v : visitado) {
+            if (!v) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void buscaEmProfundidade(int vertice, boolean[] visitado) {
+        visitado[vertice] = true;
+        for (Aresta aresta : listaAdjacencia.get(vertice)) {
+            int destino = aresta.getDestino();
+            if (!visitado[destino]) {
+                buscaEmProfundidade(destino, visitado);
+            }
+        }
     }
 
     public boolean verificarRegular() {
-        // Implemente a verificação de regularidade aqui
-        return false;
+        int grauPrimeiroVertice = consultarGrauVertice(0);
+
+        for (int i = 1; i < numVertices; i++) {
+            if (consultarGrauVertice(i) != grauPrimeiroVertice) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public boolean verificarCompleto() {
-        // Implemente a verificação de completude aqui
-        return false;
-    }
+        for (int i = 0; i < numVertices; i++) {
+            for (int j = 0; j < numVertices; j++) {
+                if (i != j && matrizAdjacencia[i][j] != 1) {
+                    return false;
+                }
+            }
+        }
 
-    public void buscaEmProfundidade(int vertice) {
-        // Implemente a busca em profundidade aqui
+        return true;
     }
 
     public void buscaEmLargura(int vertice) {
-        // Implemente a busca em largura aqui
+        boolean[] visitado = new boolean[numVertices];
+        Queue<Integer> fila = new LinkedList<>();
+        visitado[vertice] = true;
+        fila.add(vertice);
+
+        while (!fila.isEmpty()) {
+            int v = fila.poll();
+            System.out.print(v + " ");
+
+            for (Aresta aresta : listaAdjacencia.get(v)) {
+                int destino = aresta.getDestino();
+                if (!visitado[destino]) {
+                    visitado[destino] = true;
+                    fila.add(destino);
+                }
+            }
+        }
     }
 
-    public boolean verificarCaminho(int origem, int destino) {
-        // Implemente a verificação de caminho aqui
-        return false;
-    }
-
-    public void exibirCaminho(int origem, int destino) {
-        // Implemente a exibição do caminho aqui
-    }
 }
 
 class Aresta {
