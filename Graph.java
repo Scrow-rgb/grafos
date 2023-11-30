@@ -189,5 +189,17 @@ class Grafo {
         }
     }
 
+
+      public void imprimirGrafo() {
+        System.out.println("Grafo:");
+
+        for (Vertice vertice : vertices) {
+            System.out.print("Vértice " + vertice.valor + ": ");
+            for (Aresta aresta : vertice.arestas) {
+                System.out.print("(" + vertice.valor + " -> " + aresta.destino + ", Peso: " + aresta.peso + ") ");
+            }
+            System.out.println();
+        }
+    }
     
 }

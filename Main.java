@@ -1,19 +1,21 @@
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Informe o número de vértices do grafo: ");
-        int numVertices = scanner.nextInt();
+        
+
+        Grafo grafoAleatorio = gerarGrafoAleatorio(5);
+
+ 
 
         Grafo grafo = new Grafo();
 
-        for (int i = 1; i <= numVertices; i++) {
-            grafo.adicionarVertice(i);
-        }
+       
 
         boolean sair = false;
 
@@ -28,6 +30,7 @@ public class Main {
             System.out.println("7. Verificar se o grafo é regular");
             System.out.println("8. Verificar se o grafo é completo");
             System.out.println("9. Use o Dijkstra");
+            System.out.println("10. Gerar grafo aleatório");
             System.out.println("10. Sair");
 
             int opcao = scanner.nextInt();
@@ -44,6 +47,7 @@ public class Main {
                     int peso = scanner.nextInt();
 
                     grafo.adicionarAresta(origem, destino, peso);
+                    grafo.imprimirGrafo();
                     break;
 
                 case 2:
@@ -54,6 +58,7 @@ public class Main {
                     int destinoRemover = scanner.nextInt();
 
                     grafo.removerAresta(origemRemover, destinoRemover);
+                    grafo.imprimirGrafo();
                     break;
 
                 case 3:
@@ -93,16 +98,33 @@ public class Main {
                     break;
                 case 9:
 
-                System.out.print("Informe o vértice de origem para Dijkstra: ");
-                int origemDijkstra = scanner.nextInt();
-        
-                Map<Integer, Integer> distancias = grafo.dijkstra(origemDijkstra);
-        
-                System.out.println("Distâncias mínimas a partir do vértice " + origemDijkstra + ":");
-                for (Map.Entry<Integer, Integer> entry : distancias.entrySet()) {
-                    System.out.println("Vértice " + entry.getKey() + ": " + entry.getValue());
-                }
-                case 10:
+                    System.out.print("Informe o vértice de origem para Dijkstra: ");
+                    int origemDijkstra = scanner.nextInt();
+
+                    Map<Integer, Integer> distancias = grafo.dijkstra(origemDijkstra);
+
+                    System.out.println("Distâncias mínimas a partir do vértice " + origemDijkstra + ":");
+                    for (Map.Entry<Integer, Integer> entry : distancias.entrySet()) {
+                        System.out.println("Vértice " + entry.getKey() + ": " + entry.getValue());
+                    }
+                    break;
+
+                case 10: 
+
+                int numVertices;
+
+                System.out.print("Informe o número máximo de vértices para os testes: ");
+                int numMaxVertices = scanner.nextInt();
+                for ( numVertices = 100; numVertices <= numMaxVertices; numVertices *= 10) {
+                     grafo = gerarGrafoAleatorio(numVertices);
+                     grafo.imprimirGrafo();
+
+        }
+                break;
+
+                  
+                    
+                case 11:
                     sair = true;
                     break;
 
@@ -113,4 +135,31 @@ public class Main {
 
         scanner.close();
     }
+
+    public static Grafo gerarGrafoAleatorio(int numVertices) {
+        Grafo grafo = new Grafo();
+        Random random = new Random();
+
+        // Adiciona os vértices ao grafo
+        for (int i = 1; i <= numVertices; i++) {
+            grafo.adicionarVertice(i);
+        }
+
+        // Adiciona arestas aleatórias entre os vértices
+        for (int i = 1; i <= numVertices; i++) {
+            for (int j = i + 1; j <= numVertices; j++) {
+                // Gera um número aleatório (0 ou 1) para decidir se há uma aresta
+                int randomBinary = random.nextInt(2);
+
+                if (randomBinary == 1) {
+                    // Adiciona uma aresta com peso aleatório (de 1 a 10, por exemplo)
+                    int pesoAresta = random.nextInt(10) + 1;
+                    grafo.adicionarAresta(i, j, pesoAresta);
+                }
+            }
+        }
+
+        return grafo;
+    }
+
 }
