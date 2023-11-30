@@ -7,15 +7,9 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        
-
         Grafo grafoAleatorio = gerarGrafoAleatorio(5);
 
- 
-
         Grafo grafo = new Grafo();
-
-       
 
         boolean sair = false;
 
@@ -109,21 +103,20 @@ public class Main {
                     }
                     break;
 
-                case 10: 
+                case 10:
 
-                int numVertices;
+                    int numVertices;
 
-                System.out.print("Informe o número máximo de vértices para os testes: ");
-                int numMaxVertices = scanner.nextInt();
-                for ( numVertices = 100; numVertices <= numMaxVertices; numVertices *= 10) {
-                     grafo = gerarGrafoAleatorio(numVertices);
-                     grafo.imprimirGrafo();
+                    System.out.print("Informe o número máximo de vértices para os testes: ");
+                    int numMaxVertices = scanner.nextInt();
+                    for (numVertices = 100; numVertices <= numMaxVertices; numVertices *= 10) {
 
-        }
-                break;
+                        grafoAleatorio = gerarGrafoAleatorio(numVertices);
+                        grafo.imprimirGrafo();
 
-                  
-                    
+                    }
+                    break;
+
                 case 11:
                     sair = true;
                     break;
