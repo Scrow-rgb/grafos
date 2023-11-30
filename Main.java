@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -26,7 +27,8 @@ public class Main {
             System.out.println("6. Verificar se o grafo é conexo");
             System.out.println("7. Verificar se o grafo é regular");
             System.out.println("8. Verificar se o grafo é completo");
-            System.out.println("9. Sair");
+            System.out.println("9. Use o Dijkstra");
+            System.out.println("10. Sair");
 
             int opcao = scanner.nextInt();
 
@@ -89,8 +91,18 @@ public class Main {
                     boolean grafoCompleto = grafo.grafoCompleto();
                     System.out.println("O grafo é completo? " + grafoCompleto);
                     break;
-
                 case 9:
+
+                System.out.print("Informe o vértice de origem para Dijkstra: ");
+                int origemDijkstra = scanner.nextInt();
+        
+                Map<Integer, Integer> distancias = grafo.dijkstra(origemDijkstra);
+        
+                System.out.println("Distâncias mínimas a partir do vértice " + origemDijkstra + ":");
+                for (Map.Entry<Integer, Integer> entry : distancias.entrySet()) {
+                    System.out.println("Vértice " + entry.getKey() + ": " + entry.getValue());
+                }
+                case 10:
                     sair = true;
                     break;
 

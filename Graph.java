@@ -152,5 +152,48 @@ class Grafo {
         return null;
     }
 
+
+    public Map<Integer, Integer> dijkstra(int origem) {
+        Map<Integer, Integer> distancias = new HashMap<>();
+        PriorityQueue<VerticeDistancia> filaPrioridade = new PriorityQueue<>(Comparator.comparingInt(vd -> vd.distancia));
+
+        for (Vertice vertice : vertices) {
+            distancias.put(vertice.valor, Integer.MAX_VALUE);
+        }
+
+        distancias.put(origem, 0);
+        filaPrioridade.offer(new VerticeDistancia(origem, 0));
+
+        while (!filaPrioridade.isEmpty()) {
+            VerticeDistancia verticeDistancia = filaPrioridade.poll();
+            int verticeAtual = verticeDistancia.vertice;
+
+            for (Aresta aresta : encontrarVertice(verticeAtual).arestas) {
+                int novaDistancia = distancias.get(verticeAtual) + aresta.peso;
+
+                if (novaDistancia < distancias.get(aresta.destino)) {
+                    distancias.put(aresta.destino, novaDistancia);
+                    filaPrioridade.offer(new VerticeDistancia(aresta.destino, novaDistancia));
+                }
+            }
+        }
+
+        return distancias;
+    }
+
+    private static class VerticeDistancia {
+        int vertice;
+        int distancia;
+
+        public VerticeDistancia(int vertice, int distancia) {
+            this.vertice = vertice;
+            this.distancia = distancia;
+        }
+    }
+
+
+
     
 }
+
+    
