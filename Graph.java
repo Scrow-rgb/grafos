@@ -1,194 +1,156 @@
 import java.util.*;
 
-class Grafo {
-    private int numVertices;
-    private boolean direcionado;
-    private boolean ponderado;
-    private List<List<Aresta>> listaAdjacencia;
-    private int[][] matrizAdjacencia;
-
-    public Grafo(int numVertices, boolean direcionado, boolean ponderado) {
-        this.numVertices = numVertices;
-        this.direcionado = direcionado;
-        this.ponderado = ponderado;
-        this.listaAdjacencia = new ArrayList<>();
-        this.matrizAdjacencia = new int[numVertices][numVertices];
-
-        for (int i = 0; i < numVertices; ++i) {
-            listaAdjacencia.add(new ArrayList<>());
-        }
-    }
-
-    public void inserirAresta(int origem, int destino, int peso) {
-        if (origem >= 0 && origem < numVertices && destino >= 0 && destino < numVertices) {
-            if (ponderado) {
-                matrizAdjacencia[origem][destino] = peso;
-                if (!direcionado) {
-                    matrizAdjacencia[destino][origem] = peso;
-                }
-            } else {
-                matrizAdjacencia[origem][destino] = 1;
-                if (!direcionado) {
-                    matrizAdjacencia[destino][origem] = 1;
-                }
-            }
-
-            if (ponderado) {
-                listaAdjacencia.get(origem).add(new Aresta(destino, peso));
-                if (!direcionado) {
-                    listaAdjacencia.get(destino).add(new Aresta(origem, peso));
-                }
-            } else {
-                listaAdjacencia.get(origem).add(new Aresta(destino));
-                if (!direcionado) {
-                    listaAdjacencia.get(destino).add(new Aresta(origem));
-                }
-            }
-        }
-    }
-
-    public void removerAresta(int origem, int destino) {
-        if (origem >= 0 && origem < numVertices && destino >= 0 && destino < numVertices) {
-            matrizAdjacencia[origem][destino] = 0;
-            if (!direcionado) {
-                matrizAdjacencia[destino][origem] = 0;
-            }
-
-            Iterator<Aresta> iterator = listaAdjacencia.get(origem).iterator();
-            while (iterator.hasNext()) {
-                Aresta aresta = iterator.next();
-                if (aresta.getDestino() == destino) {
-                    iterator.remove();
-                    break;
-                }
-            }
-
-            if (!direcionado) {
-                iterator = listaAdjacencia.get(destino).iterator();
-                while (iterator.hasNext()) {
-                    Aresta aresta = iterator.next();
-                    if (aresta.getDestino() == origem) {
-                        iterator.remove();
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    public int consultarGrauVertice(int vertice) {
-        int grau = 0;
-        for (int i = 0; i < numVertices; ++i) {
-            if (matrizAdjacencia[vertice][i] != 0) {
-                grau++;
-            }
-        }
-        return grau;
-    }
-
-    public int consultarGrauGrafo() {
-        int grau = 0;
-        for (int i = 0; i < numVertices; ++i) {
-            grau += consultarGrauVertice(i);
-        }
-        return grau;
-    }
-
-    public List<Aresta> consultarVizinhos(int vertice) {
-        if (vertice >= 0 && vertice < numVertices) {
-            return listaAdjacencia.get(vertice);
-        }
-        return null;
-    }
-
-    public boolean verificarConexo() {
-        boolean[] visitado = new boolean[numVertices];
-        buscaEmProfundidade(0, visitado);
-
-        for (boolean v : visitado) {
-            if (!v) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void buscaEmProfundidade(int vertice, boolean[] visitado) {
-        visitado[vertice] = true;
-        for (Aresta aresta : listaAdjacencia.get(vertice)) {
-            int destino = aresta.getDestino();
-            if (!visitado[destino]) {
-                buscaEmProfundidade(destino, visitado);
-            }
-        }
-    }
-
-    public boolean verificarRegular() {
-        int grauPrimeiroVertice = consultarGrauVertice(0);
-
-        for (int i = 1; i < numVertices; i++) {
-            if (consultarGrauVertice(i) != grauPrimeiroVertice) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public boolean verificarCompleto() {
-        for (int i = 0; i < numVertices; i++) {
-            for (int j = 0; j < numVertices; j++) {
-                if (i != j && matrizAdjacencia[i][j] != 1) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    public void buscaEmLargura(int vertice) {
-        boolean[] visitado = new boolean[numVertices];
-        Queue<Integer> fila = new LinkedList<>();
-        visitado[vertice] = true;
-        fila.add(vertice);
-
-        while (!fila.isEmpty()) {
-            int v = fila.poll();
-            System.out.print(v + " ");
-
-            for (Aresta aresta : listaAdjacencia.get(v)) {
-                int destino = aresta.getDestino();
-                if (!visitado[destino]) {
-                    visitado[destino] = true;
-                    fila.add(destino);
-                }
-            }
-        }
-    }
-
-}
-
 class Aresta {
-    private int destino;
-    private int peso;
-
-    public Aresta(int destino) {
-        this.destino = destino;
-        this.peso = 0;
-    }
+    int destino;
+    int peso;
 
     public Aresta(int destino, int peso) {
         this.destino = destino;
         this.peso = peso;
     }
+}
 
-    public int getDestino() {
-        return destino;
+class Vertice {
+    int valor;
+    List<Aresta> arestas;
+
+    public Vertice(int valor) {
+        this.valor = valor;
+        this.arestas = new ArrayList<>();
+    }
+}
+
+class Grafo {
+    List<Vertice> vertices;
+
+    public Grafo() {
+        this.vertices = new ArrayList<>();
     }
 
-    public int getPeso() {
-        return peso;
+    public void adicionarVertice(int valor) {
+        vertices.add(new Vertice(valor));
     }
+
+    public void adicionarAresta(int origem, int destino, int peso) {
+        Vertice verticeOrigem = encontrarVertice(origem);
+        Vertice verticeDestino = encontrarVertice(destino);
+
+        if (verticeOrigem != null && verticeDestino != null) {
+            verticeOrigem.arestas.add(new Aresta(destino, peso));
+            // Se o grafo for não direcionado, adicione a aresta no outro sentido também
+            verticeDestino.arestas.add(new Aresta(origem, peso));
+        }
+    }
+
+    public void removerAresta(int origem, int destino) {
+        Vertice verticeOrigem = encontrarVertice(origem);
+        if (verticeOrigem != null) {
+            verticeOrigem.arestas.removeIf(a -> a.destino == destino);
+        }
+    }
+
+    public int grauDoVertice(int valorVertice) {
+        Vertice vertice = encontrarVertice(valorVertice);
+        return (vertice != null) ? vertice.arestas.size() : -1;
+    }
+
+    public int grauDoGrafo() {
+        int grau = 0;
+        for (Vertice vertice : vertices) {
+            grau += vertice.arestas.size();
+        }
+        return grau;
+    }
+
+    public List<Integer> vizinhosDoVertice(int valorVertice) {
+        List<Integer> vizinhos = new ArrayList<>();
+        Vertice vertice = encontrarVertice(valorVertice);
+
+        if (vertice != null) {
+            for (Aresta aresta : vertice.arestas) {
+                vizinhos.add(aresta.destino);
+            }
+        }
+        return vizinhos;
+    }
+
+    public boolean grafoConexo() {
+        if (vertices.isEmpty()) {
+            // Grafo vazio é considerado conexo
+            return true;
+        }
+
+        // Inicia a busca em profundidade a partir do primeiro vértice
+        Set<Integer> visitados = new HashSet<>();
+        dfs(vertices.get(0), visitados);
+
+        // Verifica se todos os vértices foram visitados
+        return visitados.size() == vertices.size();
+    }
+
+    private void dfs(Vertice vertice, Set<Integer> visitados) {
+        visitados.add(vertice.valor);
+        for (Aresta aresta : vertice.arestas) {
+            if (!visitados.contains(aresta.destino)) {
+                dfs(encontrarVertice(aresta.destino), visitados);
+            }
+        }
+    }
+
+    public boolean grafoRegular() {
+        if (vertices.isEmpty()) {
+            // Grafo vazio é considerado regular
+            return true;
+        }
+
+        int grau = grauDoVertice(vertices.get(0).valor);
+
+        for (Vertice vertice : vertices) {
+            if (grauDoVertice(vertice.valor) != grau) {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    public boolean grafoCompleto() {
+        if (vertices.isEmpty()) {
+            // Grafo vazio é considerado completo
+            return true;
+        }
+
+        int numVertices = vertices.size();
+        Set<Integer> verticesVisitados = new HashSet<>();
+
+        for (Vertice vertice : vertices) {
+            verticesVisitados.add(vertice.valor);
+
+            // Verifica se todos os outros vértices são conectados ao vértice atual
+            Set<Integer> vizinhos = new HashSet<>(vizinhosDoVertice(vertice.valor));
+            vizinhos.add(vertice.valor); // Adiciona o próprio vértice à lista de vizinhos
+
+            if (vizinhos.size() != numVertices) {
+                return false;
+            }
+        }
+
+        // Verifica se todos os vértices foram visitados
+        return verticesVisitados.size() == numVertices;
+
+    }
+
+    // Implemente os métodos restantes conforme necessário
+
+    private Vertice encontrarVertice(int valor) {
+        for (Vertice vertice : vertices) {
+            if (vertice.valor == valor) {
+                return vertice;
+            }
+        }
+        return null;
+    }
+
+    
 }
