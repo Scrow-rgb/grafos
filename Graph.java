@@ -141,7 +141,6 @@ class Grafo {
 
     }
 
-    // Implemente os métodos restantes conforme necessário
 
     private Vertice encontrarVertice(int valor) {
         for (Vertice vertice : vertices) {
@@ -152,8 +151,7 @@ class Grafo {
         return null;
     }
 
-
-    public Map<Integer, Integer> dijkstra(int origem) {
+     public Map<Integer, Integer> dijkstra(int origem) {
         Map<Integer, Integer> distancias = new HashMap<>();
         PriorityQueue<VerticeDistancia> filaPrioridade = new PriorityQueue<>(Comparator.comparingInt(vd -> vd.distancia));
 
@@ -191,9 +189,5 @@ class Grafo {
         }
     }
 
-
-
     
 }
-
-    
