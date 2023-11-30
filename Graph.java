@@ -141,7 +141,6 @@ class Grafo {
 
     }
 
-    // Implemente os métodos restantes conforme necessário
 
     private Vertice encontrarVertice(int valor) {
         for (Vertice vertice : vertices) {
